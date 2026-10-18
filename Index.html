@@ -1,0 +1,1141 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EcoXChanger | Waste-Heat Intelligence</title>
+
+<style>
+:root {
+  --red: #bd1014;
+  --red-dark: #970d11;
+  --paper: #f1f1ef;
+  --mint: #8bdcb8;
+  --gold: #e2ca3d;
+  --orange: #e99b60;
+  --muted: #707070;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  font-family: Arial, Helvetica, sans-serif;
+  color: #111;
+  background: var(--paper);
+}
+
+button, input {
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+/* ================= NAVIGATION ================= */
+
+.topbar {
+  position: absolute;
+  z-index: 10;
+  top: 0;
+  left: 0;
+  width: 100%;
+  padding: 30px 4.7%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+}
+
+.brand svg {
+  width: 75px;
+  height: 65px;
+}
+
+.nav {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  background: rgba(255,255,255,.88);
+  border-radius: 40px;
+  padding: 5px 10px;
+}
+
+.nav button {
+  border: none;
+  background: transparent;
+  color: #748778;
+  padding: 12px 20px;
+  border-radius: 30px;
+  font-size: 15px;
+  white-space: nowrap;
+}
+
+.nav button:hover {
+  color: var(--red);
+  background: white;
+}
+
+.profile {
+  width: 45px;
+  height: 45px;
+  border: 2px solid white;
+  border-radius: 50%;
+  background: transparent;
+  color: #222;
+  font-size: 25px;
+}
+
+/* ================= PAGE SYSTEM ================= */
+
+.page {
+  display: none;
+  min-height: 100vh;
+  padding: 140px 5% 55px;
+}
+
+.page.active {
+  display: block;
+}
+
+#home.active {
+  display: flex;
+}
+
+.page-head {
+  max-width: 850px;
+  margin: 0 auto 35px;
+  text-align: center;
+}
+
+.eyebrow {
+  color: var(--red);
+  font-size: 12px;
+  font-weight: bold;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-bottom: 12px;
+}
+
+.page h2 {
+  font-size: clamp(32px, 4vw, 50px);
+  letter-spacing: -1px;
+  margin: 0 0 12px;
+}
+
+.page-head p {
+  color: var(--muted);
+  line-height: 1.7;
+}
+
+/* ================= HOME / HERO ================= */
+
+.hero {
+  min-height: 100vh;
+  position: relative;
+  overflow: hidden;
+  align-items: center;
+  padding: 150px 4.7% 70px;
+  background: var(--paper);
+}
+
+.hero::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 0 63%;
+  background: linear-gradient(
+    135deg,
+    var(--gold),
+    #e7b052 40%,
+    var(--orange)
+  );
+}
+
+.hero-copy {
+  position: relative;
+  z-index: 3;
+  width: 58%;
+  max-width: 780px;
+}
+
+.hero h1 {
+  font-size: clamp(48px, 6.1vw, 92px);
+  letter-spacing: -3px;
+  line-height: 1;
+  margin: 0 0 20px;
+  font-weight: 800;
+}
+
+.logo-x {
+  color: #d10b0b;
+}
+
+.tagline {
+  max-width: 610px;
+  font-size: clamp(18px, 1.7vw, 27px);
+  line-height: 1.45;
+  margin: 0 0 55px;
+}
+
+.primary {
+  background: var(--red);
+  color: white;
+  border: 1px solid var(--red-dark);
+  border-radius: 30px;
+  padding: 15px 38px;
+  min-width: 200px;
+  font-weight: bold;
+  box-shadow: 0 3px 0 #888;
+  transition: .2s;
+}
+
+.primary:hover {
+  background: var(--red-dark);
+  transform: translateY(-2px);
+}
+
+/* ================= REFINERY ILLUSTRATION ================= */
+
+.plant-art {
+  position: absolute;
+  z-index: 2;
+  right: -3%;
+  bottom: -2%;
+  width: 62%;
+  height: 75%;
+  pointer-events: none;
+}
+
+.plant-art .pipe {
+  fill: none;
+  stroke: #a5a89e;
+  stroke-width: 18;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+}
+
+.plant-art .red-pipe {
+  fill: none;
+  stroke: #e9503d;
+  stroke-width: 12;
+  stroke-linejoin: round;
+}
+
+.plant-art .rail {
+  fill: none;
+  stroke: #f3bd37;
+  stroke-width: 6;
+}
+
+/* ================= DATA SELECTION ================= */
+
+.menu {
+  max-width: 1000px;
+  margin: 40px auto;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 22px;
+}
+
+.menu-box {
+  min-height: 215px;
+  padding: 26px;
+  text-align: left;
+  background: white;
+  border: 1px solid #e6e3dc;
+  border-radius: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  transition: .25s;
+  box-shadow: 0 10px 30px #00000008;
+}
+
+.menu-box:hover {
+  transform: translateY(-5px);
+  border-color: #e2a39c;
+  box-shadow: 0 18px 35px #00000012;
+}
+
+.menu-icon {
+  width: 52px;
+  height: 52px;
+  display: grid;
+  place-items: center;
+  border-radius: 15px;
+  background: #fff0ed;
+  color: var(--red);
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.menu-box strong {
+  display: block;
+  font-size: 25px;
+  margin: 20px 0 8px;
+}
+
+.menu-box span {
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+/* ================= INPUT FORM ================= */
+
+.form-wrap {
+  max-width: 760px;
+  margin: auto;
+  padding: 35px;
+  background: white;
+  border: 1px solid #e6e3dc;
+  border-radius: 22px;
+  box-shadow: 0 18px 50px #0000000a;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 22px;
+}
+
+.form-group label {
+  display: block;
+  font-size: 14px;
+  font-weight: bold;
+  margin-bottom: 9px;
+}
+
+.form-group input {
+  width: 100%;
+  padding: 14px;
+  border: 1px solid #d9d8d2;
+  border-radius: 9px;
+  outline: none;
+}
+
+.form-group input:focus {
+  border-color: var(--red);
+  box-shadow: 0 0 0 3px #bd101415;
+}
+
+.unit {
+  color: #888;
+  font-size: 12px;
+  margin-top: 6px;
+}
+
+.form-actions,
+.result-actions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: 28px;
+}
+
+.secondary {
+  background: #f1f0ed;
+  border: 1px solid #e2e0da;
+  border-radius: 28px;
+  padding: 13px 25px;
+  font-weight: bold;
+}
+
+.secondary:hover {
+  background: #e5e3dc;
+}
+
+.notice {
+  display: none;
+  margin-top: 20px;
+  padding: 15px;
+  border-radius: 10px;
+  background: #fff0ed;
+  color: #8b1515;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.notice.show {
+  display: block;
+}
+
+/* ================= OUTPUT PAGE ================= */
+
+.result-page {
+  max-width: 900px;
+  margin: auto;
+}
+
+.result-card {
+  background: white;
+  padding: 35px;
+  border: 1px solid #e6e3dc;
+  border-radius: 22px;
+  box-shadow: 0 18px 50px #0000000a;
+}
+
+.result-status {
+  text-align: center;
+  color: #597b65;
+  font-size: 14px;
+  font-weight: bold;
+  margin-bottom: 12px;
+}
+
+.result-type {
+  text-align: center;
+  color: var(--muted);
+  margin-bottom: 30px;
+}
+
+.result-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+.result-item {
+  background: #f5f4ef;
+  border: 1px solid #e8e5dc;
+  padding: 28px 22px;
+  border-radius: 16px;
+}
+
+.result-item.highlight {
+  background: #f9edc8;
+  border-color: #ead68b;
+}
+
+.result-label {
+  color: #707070;
+  font-size: 14px;
+  margin-bottom: 15px;
+}
+
+.result-value {
+  font-size: clamp(28px, 4vw, 42px);
+  font-weight: bold;
+  overflow-wrap: anywhere;
+}
+
+.result-unit {
+  font-size: 14px;
+  color: #777;
+  margin-top: 8px;
+}
+
+.result-note {
+  margin-top: 24px;
+  color: #777;
+  font-size: 13px;
+  line-height: 1.7;
+}
+
+/* ================= INFORMATION / OTHER ================= */
+
+.content-card {
+  max-width: 750px;
+  margin: 20px auto;
+  padding: 40px;
+  background: white;
+  border-radius: 22px;
+  text-align: center;
+  line-height: 1.8;
+  box-shadow: 0 15px 40px #00000008;
+}
+
+.content-card p {
+  color: var(--muted);
+}
+
+.footer {
+  text-align: center;
+  padding: 25px;
+  font-size: 12px;
+  color: #777;
+}
+
+/* ================= RESPONSIVE ================= */
+
+@media (max-width: 800px) {
+  .topbar {
+    padding: 20px 5%;
+  }
+
+  .brand svg {
+    width: 55px;
+  }
+
+  .nav {
+    top: 88px;
+  }
+
+  .nav button {
+    padding: 9px 12px;
+    font-size: 13px;
+  }
+
+  .profile {
+    width: 38px;
+    height: 38px;
+    font-size: 21px;
+  }
+
+  .hero {
+    min-height: 850px;
+    align-items: flex-start !important;
+    padding: 195px 6% 340px;
+  }
+
+  .hero::before {
+    inset: 48% 0 0;
+  }
+
+  .hero-copy {
+    width: 100%;
+  }
+
+  .hero h1 {
+    font-size: clamp(43px, 9vw, 68px);
+    letter-spacing: -2px;
+  }
+
+  .tagline {
+    margin-bottom: 30px;
+  }
+
+  .plant-art {
+    width: 100%;
+    height: 47%;
+    right: -8%;
+  }
+
+  .menu {
+    grid-template-columns: 1fr;
+    max-width: 500px;
+  }
+
+  .menu-box {
+    min-height: 165px;
+  }
+
+  .form-grid,
+  .result-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .page {
+    padding: 150px 6% 45px;
+  }
+
+  .form-wrap,
+  .result-card {
+    padding: 22px;
+  }
+
+  .content-card {
+    padding: 25px;
+  }
+}
+
+@media (max-width: 480px) {
+  .nav {
+    top: 78px;
+  }
+
+  .nav button {
+    padding: 9px;
+  }
+
+  .hero {
+    padding-top: 185px;
+  }
+
+  .hero::before {
+    inset: 54% 0 0;
+  }
+
+  .plant-art {
+    width: 115%;
+    height: 43%;
+    right: -18%;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<!-- ================= HEADER ================= -->
+
+<header class="topbar">
+
+  <a class="brand" href="#" onclick="showHome(event)"
+     aria-label="EcoXChanger Beranda">
+    <svg viewBox="0 0 110 86" aria-hidden="true">
+      <path d="M8 20 A40 40 0 0 1 48 0 L48 19
+               A21 21 0 0 0 27 40 L8 40 Z"
+            fill="#8bdcb8"/>
+      <path d="M65 0 H91 V52 H65 Z" fill="#8bdcb8"/>
+      <path d="M8 50 H28 V72 H50 V86 H8 Z"
+            fill="#8bdcb8"/>
+      <g fill="#f6d6a2">
+        <rect x="65" y="62" width="8" height="20"/>
+        <rect x="77" y="52" width="8" height="30"/>
+        <rect x="89" y="42" width="8" height="40"/>
+      </g>
+      <path d="M61 66 L100 34 L95 34 L109 30
+               L104 44 L102 39 L64 71 Z"
+            fill="#f6d6a2"/>
+      <circle cx="68" cy="65" r="11" fill="#f6d6a2"/>
+      <text x="68" y="70" text-anchor="middle"
+            font-size="15" fill="white">$</text>
+    </svg>
+  </a>
+
+  <nav class="nav">
+    <button onclick="showHome()">Beranda</button>
+    <button onclick="showAbout()">Tentang Kami</button>
+    <button onclick="showFaq()">FAQ</button>
+  </nav>
+
+  <button class="profile" onclick="showProfile()"
+          aria-label="Profil pengguna">○</button>
+</header>
+
+<main>
+
+<!-- ================= HOME ================= -->
+
+<section id="home" class="page hero">
+
+  <svg class="plant-art" viewBox="0 0 800 650"
+       preserveAspectRatio="xMidYMax meet"
+       aria-label="Ilustrasi fasilitas kilang industri">
+
+    <defs>
+      <linearGradient id="metal" x1="0" x2="1">
+        <stop offset="0" stop-color="#aeb1a8"/>
+        <stop offset=".45" stop-color="#f0f0eb"/>
+        <stop offset="1" stop-color="#b7bab1"/>
+      </linearGradient>
+    </defs>
+
+    <g stroke="#9ea198" stroke-width="3">
+      <rect x="370" y="80" width="115" height="530"
+            rx="45" fill="url(#metal)"/>
+      <ellipse cx="427" cy="90" rx="57" ry="18"
+               fill="#d8d9d2"/>
+      <rect x="290" y="205" width="65" height="405"
+            rx="25" fill="url(#metal)"/>
+      <ellipse cx="322" cy="215" rx="32" ry="11"
+               fill="#d8d9d2"/>
+      <rect x="220" y="340" width="45" height="270"
+            rx="18" fill="url(#metal)"/>
+    </g>
+
+    <path class="pipe"
+         d="M405 610 V450 Q405 420 375 420 H340 V300"/>
+    <path class="pipe"
+          d="M465 610 V360 Q465 330 495 330 H530 V245"/>
+    <path class="pipe"
+          d="M300 610 V510 H235 V435 Q235 410 260 410 H280"/>
+
+    <path class="red-pipe"
+          d="M210 650 V535 H335 V475 H370"/>
+    <path class="red-pipe"
+          d="M490 650 V490 H600 V410"/>
+
+    <path class="rail" d="M375 80 Q427 45 480 80"/>
+    <path class="rail" d="M375 95 Q427 60 480 95"/>
+    <path class="rail" d="M290 205 Q322 180 355 205"/>
+    <path class="rail" d="M290 220 Q322 195 355 220"/>
+
+    <g fill="none" stroke="#e9503d" stroke-width="8">
+      <path d="M525 650 V490 H785"/>
+      <path d="M585 650 V530 H800"/>
+      <path d="M650 650 V570 H800"/>
+      <path d="M525 530 H800"/>
+      <path d="M585 570 H800"/>
+      <path d="M650 610 H800"/>
+    </g>
+
+    <g fill="none" stroke="#f3bd37" stroke-width="5">
+      <path d="M545 490 L600 420 L660 490"/>
+      <path d="M560 490 L600 445 L640 490"/>
+      <path d="M600 420 V490"/>
+      <path d="M370 65 H485"/>
+    </g>
+
+    <path d="M220 340 V305 H230 V285"
+          fill="none" stroke="#aeb1a8" stroke-width="8"/>
+    <path d="M220 340 V305 H230 V285"
+          fill="none" stroke="#e9503d" stroke-width="3"/>
+  </svg>
+
+  <div class="hero-copy">
+    <h1>Eco<span class="logo-x">X</span>Changer</h1>
+    <p class="tagline">
+      From Plant Energy Management to Waste-Heat
+      Opportunity Intelligence
+    </p>
+    <button class="primary" onclick="openMenu()">Mulai</button>
+  </div>
+</section>
+
+<!-- ================= DATA MENU ================= -->
+
+<section id="menuPage" class="page">
+
+  <div class="page-head">
+    <div class="eyebrow">EcoXChanger Workspace</div>
+    <h2>Choose Your Data</h2>
+    <p>
+      Pilih jenis aliran proses yang ingin dianalisis
+      untuk mengevaluasi peluang pemanfaatan energi panas.
+    </p>
+  </div>
+
+  <div class="menu">
+
+    <button class="menu-box" onclick="openInput('gas')">
+      <div class="menu-icon">G</div>
+      <div>
+        <strong>Gas</strong>
+        <span>Input parameter gas buang dan karakteristik alirannya.</span>
+      </div>
+    </button>
+
+    <button class="menu-box" onclick="openInput('steam')">
+      <div class="menu-icon">S</div>
+      <div>
+        <strong>Steam</strong>
+        <span>Input parameter aliran steam untuk analisis awal.</span>
+      </div>
+    </button>
+
+    <button class="menu-box" onclick="openOther()">
+      <div class="menu-icon">+</div>
+      <div>
+        <strong>Other</strong>
+        <span>Jenis aliran dan fitur tambahan akan dikembangkan.</span>
+      </div>
+    </button>
+
+  </div>
+
+  <div class="footer">
+    EcoXChanger · Waste-Heat Opportunity Intelligence
+  </div>
+</section>
+
+<!-- ================= INPUT FORM ================= -->
+
+<section id="inputPage" class="page">
+
+  <div class="page-head">
+    <div class="eyebrow">Data Input</div>
+    <h2 id="inputTitle">Gas Data Input</h2>
+    <p>
+      Masukkan parameter proses yang tersedia.
+      Pastikan nilai dan satuan sesuai dengan data operasional.
+    </p>
+  </div>
+
+  <form id="dataForm" class="form-wrap">
+
+    <div class="form-grid">
+
+      <div class="form-group">
+        <label for="massFlow">Mass flow</label>
+        <input type="number" id="massFlow"
+               placeholder="Contoh: 2.5"
+               min="0" step="any" required>
+        <div class="unit">Satuan: kg/s</div>
+      </div>
+
+      <div class="form-group">
+        <label for="temperatureInlet">Temperature inlet</label>
+        <input type="number" id="temperatureInlet"
+               placeholder="Temperatur masuk"
+               step="any" required>
+        <div class="unit">Satuan: °C</div>
+      </div>
+
+      <div class="form-group">
+        <label for="pressure">Pressure</label>
+        <input type="number" id="pressure"
+               placeholder="Tekanan proses"
+               min="0" step="any" required>
+        <div class="unit">Satuan: bar</div>
+      </div>
+
+      <div class="form-group">
+        <label for="temperatureOutlet">Temperature outlet</label>
+        <input type="number" id="temperatureOutlet"
+               placeholder="Temperatur keluar"
+               step="any" required>
+        <div class="unit">Satuan: °C</div>
+      </div>
+
+      <div class="form-group" style="grid-column:1/-1">
+        <label for="gasComposition">Gas composition (opsional)</label>
+        <input type="text" id="gasComposition"
+               placeholder="Contoh: CO2 10%, N2 70%, O2 20%">
+        <div class="unit">
+          Isi jika data komposisi tersedia.
+        </div>
+      </div>
+
+    </div>
+
+    <div class="form-actions">
+      <button type="button" class="secondary" onclick="openMenu()">
+        Kembali
+      </button>
+
+      <button type="submit" class="primary">
+        Submit Data
+      </button>
+    </div>
+
+    <div id="notice" class="notice" role="alert"></div>
+
+  </form>
+</section>
+
+<!-- ================= OUTPUT PAGE ================= -->
+
+<section id="outputPage" class="page">
+
+  <div class="page-head">
+    <div class="eyebrow">Analysis Result</div>
+    <h2>Heat Recovery Output</h2>
+    <p>
+      Berikut adalah hasil estimasi berdasarkan parameter
+      proses yang telah dimasukkan.
+    </p>
+  </div>
+
+  <div class="result-page">
+    <div class="result-card">
+
+      <div class="result-status">Analysis Completed</div>
+
+      <div class="result-type">
+        Selected process: <strong id="resultType">GAS</strong>
+      </div>
+
+      <div class="result-grid">
+
+        <div class="result-item">
+          <div class="result-label">Temperature Difference (ΔT)</div>
+          <div class="result-value" id="deltaTResult">0</div>
+          <div class="result-unit">°C</div>
+        </div>
+
+        <div class="result-item highlight">
+          <div class="result-label">Estimated Heat Recovery</div>
+          <div class="result-value" id="heatResult">0</div>
+          <div class="result-unit">kW (thermal)</div>
+        </div>
+
+      </div>
+
+      <div class="result-note">
+        Nilai merupakan estimasi awal berdasarkan kapasitas
+        panas spesifik asumsi. Hasil aktual dapat berbeda
+        bergantung pada komposisi fluida, tekanan, kondisi
+        operasi, serta batas temperatur pemulihan panas.
+      </div>
+
+      <div class="result-actions">
+        <button type="button" class="secondary" onclick="returnToInput()">
+          Edit Data
+        </button>
+
+        <button type="button" class="primary" onclick="openMenu()">
+          Selesai
+        </button>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ================= OTHER ================= -->
+
+<section id="otherPage" class="page">
+
+  <div class="content-card">
+    <div class="eyebrow">In Development</div>
+    <h2>Coming Soon</h2>
+    <p>
+      Fitur ini sedang dalam tahap pengembangan.
+      Nantikan pembaruan EcoXChanger.
+    </p>
+    <button class="secondary" onclick="openMenu()">
+      Kembali ke pilihan data
+    </button>
+  </div>
+</section>
+
+<!-- ================= ABOUT / FAQ / PROFILE ================= -->
+
+<section id="infoPage" class="page">
+  <div class="content-card">
+    <div class="eyebrow">EcoXChanger</div>
+    <h2 id="infoTitle">Tentang Kami</h2>
+    <p id="infoText"></p>
+    <button class="secondary" onclick="showHome()">
+      Kembali ke Beranda
+    </button>
+  </div>
+</section>
+
+</main>
+
+<script>
+"use strict";
+
+/* ================= PAGE NAVIGATION ================= */
+
+let selectedType = "gas";
+let lastInputType = "gas";
+
+const pageIds = [
+  "home",
+  "menuPage",
+  "inputPage",
+  "outputPage",
+  "otherPage",
+  "infoPage"
+];
+
+function showPage(id) {
+  pageIds.forEach(function(pageId) {
+    document.getElementById(pageId).classList.toggle(
+      "active",
+      pageId === id
+    );
+  });
+
+  window.scrollTo({
+    top: 0,
+    behavior: "smooth"
+  });
+}
+
+function showHome(event) {
+  if (event) event.preventDefault();
+  showPage("home");
+}
+
+function openMenu() {
+  showPage("menuPage");
+}
+
+function openInput(type) {
+  selectedType = type;
+  lastInputType = type;
+
+  document.getElementById("inputTitle").textContent =
+    type === "gas" ? "Gas Data Input" : "Steam Data Input";
+
+  document.getElementById("notice").classList.remove("show");
+  document.getElementById("notice").textContent = "";
+
+  showPage("inputPage");
+}
+
+function openOther() {
+  showPage("otherPage");
+}
+
+function showInfo(title, text) {
+  document.getElementById("infoTitle").textContent = title;
+  document.getElementById("infoText").textContent = text;
+  showPage("infoPage");
+}
+
+function showAbout() {
+  showInfo(
+    "Tentang EcoXChanger",
+    "EcoXChanger merupakan konsep platform untuk " +
+    "membantu mengidentifikasi peluang pemanfaatan " +
+    "waste heat dari proses industri melalui evaluasi " +
+    "parameter aliran dan estimasi energi panas."
+  );
+}
+
+function showFaq() {
+  showInfo(
+    "FAQ",
+    "Bagaimana cara menggunakan EcoXChanger? " +
+    "Pilih Gas atau Steam, masukkan parameter proses, " +
+    "lalu tekan Submit Data. Sistem akan menampilkan " +
+    "perbedaan temperatur dan estimasi heat recovery. " +
+    "Hasil saat ini merupakan estimasi awal, bukan " +
+    "simulasi termodinamika lengkap."
+  );
+}
+
+function showProfile() {
+  showInfo(
+    "Profil Pengguna",
+    "Area profil pengguna akan dikembangkan pada tahap berikutnya."
+  );
+}
+
+/* ================= DATA PROCESSING ================= */
+
+// Menangani submit melalui event form agar proses
+// tetap berjalan konsisten dan tidak me-reload halaman.
+
+document.getElementById("dataForm").addEventListener(
+  "submit",
+  function(event) {
+    event.preventDefault();
+    saveData();
+  }
+);
+
+function saveData() {
+  const massFlowText =
+    document.getElementById("massFlow").value.trim();
+
+  const inletText =
+    document.getElementById("temperatureInlet").value.trim();
+
+  const pressureText =
+    document.getElementById("pressure").value.trim();
+
+  const outletText =
+    document.getElementById("temperatureOutlet").value.trim();
+
+  const notice = document.getElementById("notice");
+
+  function showError(message) {
+    notice.textContent = message;
+    notice.classList.add("show");
+  }
+
+  notice.textContent = "";
+  notice.classList.remove("show");
+
+  // Validasi kelengkapan data
+  if (
+    massFlowText === "" ||
+    inletText === "" ||
+    pressureText === "" ||
+    outletText === ""
+  ) {
+    showError("Mohon lengkapi seluruh parameter wajib.");
+    return;
+  }
+
+  const massFlow = Number(massFlowText);
+  const temperatureInlet = Number(inletText);
+  const pressure = Number(pressureText);
+  const temperatureOutlet = Number(outletText);
+
+  // Validasi angka dan nilai operasional
+  if (
+    !Number.isFinite(massFlow) ||
+    !Number.isFinite(temperatureInlet) ||
+    !Number.isFinite(pressure) ||
+    !Number.isFinite(temperatureOutlet)
+  ) {
+    showError("Masukkan angka yang valid pada seluruh parameter.");
+    return;
+  }
+
+  if (massFlow <= 0 || pressure <= 0) {
+    showError("Mass flow dan pressure harus lebih besar dari nol.");
+    return;
+  }
+
+  if (temperatureInlet <= temperatureOutlet) {
+    showError(
+      "Temperature inlet harus lebih tinggi daripada temperature outlet."
+    );
+    return;
+  }
+
+  /*
+    Cp asumsi awal:
+    Gas   = 1.1 kJ/(kg·°C)
+    Steam = 2.0 kJ/(kg·°C)
+
+    Angka ini merupakan pendekatan sederhana.
+    Cp aktual perlu ditentukan dari jenis fluida,
+    komposisi, tekanan, dan temperatur operasi.
+  */
+
+  const cp = selectedType === "steam" ? 2.0 : 1.1;
+
+  // Perhitungan internal, tanpa menampilkan rumus
+  const deltaT = temperatureInlet - temperatureOutlet;
+
+  // kg/s × kJ/(kg·°C) × °C = kJ/s = kW
+  const heatRecovery = massFlow * cp * deltaT;
+
+  if (
+    !Number.isFinite(deltaT) ||
+    !Number.isFinite(heatRecovery)
+  ) {
+    showError("Hasil perhitungan tidak valid. Periksa kembali data.");
+    return;
+  }
+
+  // Isi output sebelum berpindah halaman
+  document.getElementById("resultType").textContent =
+    selectedType.toUpperCase();
+
+  document.getElementById("deltaTResult").textContent =
+    formatNumber(deltaT);
+
+  document.getElementById("heatResult").textContent =
+    formatNumber(heatRecovery);
+
+  // Buka halaman output
+  showPage("outputPage");
+}
+
+function formatNumber(value) {
+  return value.toLocaleString("id-ID", {
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 2
+  });
+}
+
+function returnToInput() {
+  selectedType = lastInputType;
+
+  document.getElementById("inputTitle").textContent =
+    selectedType === "gas" ? "Gas Data Input" : "Steam Data Input";
+
+  showPage("inputPage");
+}
+
+// Tampilan awal
+showPage("home");
+</script>
+
+</body>
+</html>
